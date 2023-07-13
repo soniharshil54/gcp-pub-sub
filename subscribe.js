@@ -1,8 +1,14 @@
 const { PubSub } = require('@google-cloud/pubsub');
 require('dotenv').config();
 
-// Creates a client
-const pubSubClient = new PubSub();
+const UtilService = require('./services/util');
+
+let pubSubClient = new PubSub(
+    {
+        projectId: process.env.GOOGLE_PROJECT_ID,
+        credentials: JSON.parse(UtilService.decodeBase64(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE_64)),
+    }
+);
 
 async function createTopicAndSubscribe(topicName, subscriptionName) {
   try {
@@ -36,7 +42,7 @@ async function createTopicAndSubscribe(topicName, subscriptionName) {
 }
 
 const topicName = 'your-topic-name';
-const subscriptionName = 'your-subscription-name';
+const subscriptionName = 'your-subscription-name-7';
 
 createTopicAndSubscribe(topicName, subscriptionName);
 
