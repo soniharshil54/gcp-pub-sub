@@ -1,4 +1,5 @@
 const { PubSub } = require('@google-cloud/pubsub');
+require('dotenv').config();
 
 // Creates a client
 const pubSubClient = new PubSub();
@@ -15,6 +16,6 @@ async function publishMessage(topicName, data) {
 }
 
 const topicName = 'your-topic-name';
-const messageData = 'Hello, Pub/Sub!';
+const messageData = 'Hello, Pub/Sub 2!';
 
 publishMessage(topicName, messageData);

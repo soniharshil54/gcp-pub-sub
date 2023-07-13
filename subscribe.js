@@ -1,27 +1,42 @@
 const { PubSub } = require('@google-cloud/pubsub');
+require('dotenv').config();
 
 // Creates a client
 const pubSubClient = new PubSub();
 
-async function subscribe(topicName, subscriptionName) {
-  const subscription = pubSubClient.subscription(subscriptionName);
+async function createTopicAndSubscribe(topicName, subscriptionName) {
+  try {
+    // Check if the topic already exists
+    const [topicExists] = await pubSubClient.topic(topicName).exists();
 
-  subscription.on('message', (message) => {
-    console.log('Received message:', message.data.toString());
-    message.ack();
-  });
+    if (!topicExists) {
+      // Create a new topic
+      const [topic] = await pubSubClient.createTopic(topicName);
+      console.log(`Topic ${topic.name} created.`);
+    }
 
-  subscription.on('error', (error) => {
-    console.error('Error:', error);
-  });
+    // Create a subscription for the topic
+    const [subscription] = await pubSubClient.topic(topicName).createSubscription(subscriptionName);
+    console.log(`Subscription ${subscription.name} created.`);
+    
+    // Start listening for messages
+    subscription.on('message', (message) => {
+      console.log('Received message:', message.data.toString());
+      message.ack();
+    });
 
-  // Start listening for messages
-  await subscription.create();
+    subscription.on('error', (error) => {
+      console.error('Error:', error);
+    });
 
-  console.log(`Listening for messages on ${subscriptionName}...`);
+    console.log(`Listening for messages on ${subscription.name}...`);
+  } catch (error) {
+    console.error('Error creating topic/subscription:', error);
+  }
 }
 
 const topicName = 'your-topic-name';
 const subscriptionName = 'your-subscription-name';
 
-subscribe(topicName, subscriptionName);
+createTopicAndSubscribe(topicName, subscriptionName);
+

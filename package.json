@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/soniharshil54/gcp-pub-sub/issues"
   },
-  "homepage": "https://github.com/soniharshil54/gcp-pub-sub#readme"
+  "homepage": "https://github.com/soniharshil54/gcp-pub-sub#readme",
+  "dependencies": {
+    "@google-cloud/pubsub": "^3.7.1",
+    "dotenv": "^16.3.1"
+  }
 }
